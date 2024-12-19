@@ -6,6 +6,7 @@ INTERFACE zif_settings PUBLIC.
 * Copyright 2024 apm.to Inc. <https://apm.to>
 * SPDX-License-Identifier: MIT
 ************************************************************************
+
   CONSTANTS c_version TYPE string VALUE '1.0.0' ##NO_TEXT.
 
   TYPES:
@@ -58,7 +59,7 @@ INTERFACE zif_settings PUBLIC.
 
   METHODS get_json
     IMPORTING
-      !iv_complete  TYPE abap_bool DEFAULT abap_false
+      !is_complete  TYPE abap_bool DEFAULT abap_false
     RETURNING
       VALUE(result) TYPE string
     RAISING
@@ -66,7 +67,7 @@ INTERFACE zif_settings PUBLIC.
 
   METHODS set
     IMPORTING
-      !is_settings  TYPE ty_settings
+      !settings     TYPE ty_settings
     RETURNING
       VALUE(result) TYPE REF TO zif_settings
     RAISING
@@ -74,7 +75,7 @@ INTERFACE zif_settings PUBLIC.
 
   METHODS set_json
     IMPORTING
-      !iv_json      TYPE string
+      !json         TYPE string
     RETURNING
       VALUE(result) TYPE REF TO zif_settings
     RAISING
