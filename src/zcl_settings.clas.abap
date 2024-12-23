@@ -217,16 +217,19 @@ CLASS zcl_settings IMPLEMENTATION.
     ls_default = get_default( ).
 
     DO.
+      " Current settings
       ASSIGN COMPONENT sy-index OF STRUCTURE cs_settings TO <lv_value>.
       IF sy-subrc <> 0.
         EXIT.
       ENDIF.
 
       IF <lv_value> IS INITIAL.
+        " Global settings
         ASSIGN COMPONENT sy-index OF STRUCTURE ls_global TO <lv_global>.
         ASSERT sy-subrc = 0.
 
         IF <lv_value> IS INITIAL.
+          " apm default settings
           ASSIGN COMPONENT sy-index OF STRUCTURE ls_default TO <lv_default>.
           ASSERT sy-subrc = 0.
 
@@ -266,11 +269,10 @@ CLASS zcl_settings IMPLEMENTATION.
       lx_error TYPE REF TO zcx_ajson_error.
 
     TRY.
-        ajson = zcl_ajson=>new( )->keep_item_order( )->set(
-          iv_path = '/'
-          iv_val  = zif_settings~get( ) ).
-
-        ajson = ajson->map( zcl_ajson_mapping=>create_to_camel_case( ) ).
+        ajson = zcl_ajson=>new( )->keep_item_order( )->map(
+          zcl_ajson_mapping=>create_to_camel_case( ) )->set(
+            iv_path = '/'
+            iv_val  = zif_settings~get( ) ).
 
         IF is_complete = abap_false.
           ajson = ajson->filter( lcl_ajson_filters=>create_empty_filter( ) ).
@@ -326,9 +328,10 @@ CLASS zcl_settings IMPLEMENTATION.
     DATA settings TYPE zif_settings=>ty_settings.
 
     TRY.
-        DATA(ajson) = zcl_ajson=>parse( json ).
-        " TODO: packageSettings does not map to package_setting
-        " Looks like a ajson bug
+        DATA(ajson) = zcl_ajson=>parse(
+          iv_json           = json
+          ii_custom_mapping = zcl_ajson_mapping=>create_to_camel_case( ) ).
+
         ajson->to_abap(
           EXPORTING
             iv_corresponding = abap_true
