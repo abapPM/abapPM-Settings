@@ -58,8 +58,6 @@ CLASS zcl_settings DEFINITION
       END OF ty_instance,
       ty_instances TYPE HASHED TABLE OF ty_instance WITH UNIQUE KEY name.
 
-    CONSTANTS c_settings TYPE string VALUE 'SETTINGS'.
-
     CLASS-DATA:
       db_persist TYPE REF TO zif_persist_apm,
       instances  TYPE ty_instances.
@@ -87,14 +85,18 @@ CLASS zcl_settings IMPLEMENTATION.
 
 
   METHOD check_settings.
+
     IF zcl_package_json_valid=>is_valid_url( is_settings-registry ) = abap_false.
       INSERT |Invalid registry URL: { is_settings-registry }| INTO TABLE result.
     ENDIF.
+
   ENDMETHOD.
 
 
   METHOD class_constructor.
+
     db_persist = zcl_persist_apm=>get_instance( ).
+
   ENDMETHOD.
 
 
@@ -105,7 +107,7 @@ CLASS zcl_settings IMPLEMENTATION.
     ENDIF.
 
     me->name = name.
-    me->key  = get_setting_key( name ).
+    key = get_setting_key( name ).
 
     TRY.
         zif_settings~load( ).
@@ -120,78 +122,70 @@ CLASS zcl_settings IMPLEMENTATION.
 
   METHOD factory.
 
-    DATA ls_instance TYPE ty_instance.
-
-    FIELD-SYMBOLS <ls_instance> TYPE ty_instance.
-
-    READ TABLE instances ASSIGNING <ls_instance> WITH TABLE KEY name = name.
+    READ TABLE instances ASSIGNING FIELD-SYMBOL(<instance>) WITH TABLE KEY name = name.
     IF sy-subrc = 0.
-      result = <ls_instance>-instance.
+      result = <instance>-instance.
     ELSE.
-      CREATE OBJECT result TYPE zcl_settings
-        EXPORTING
-          name = name.
+      result = NEW zcl_settings( name ).
 
-      ls_instance-name     = name.
-      ls_instance-instance = result.
-      INSERT ls_instance INTO TABLE instances.
+      DATA(instance) = VALUE ty_instance(
+        name     = name
+        instance = result ).
+      INSERT instance INTO TABLE instances.
     ENDIF.
 
   ENDMETHOD.
 
 
   METHOD get_default.
+
     " Default values for settings
     result-registry = zif_settings=>c_registry.
+
   ENDMETHOD.
 
 
   METHOD get_setting_key.
+
     result = |{ zif_persist_apm=>c_key_type-settings }:{ name }|.
+
   ENDMETHOD.
 
 
   METHOD initialize_global_settings.
 
-    DATA:
-      li_global TYPE REF TO zif_settings,
-      ls_global TYPE zif_settings=>ty_settings.
-
-    li_global = factory( zif_settings=>c_global ).
+    DATA(global) = factory( zif_settings=>c_global ).
 
     " Check if global settings exist already
     TRY.
-        ls_global = li_global->load( )->get( ).
+        DATA(settings) = global->load( )->get( ).
       CATCH zcx_error ##NO_HANDLER.
     ENDTRY.
 
-    IF ls_global IS NOT INITIAL.
+    IF settings IS NOT INITIAL.
       RETURN.
     ENDIF.
 
-    li_global->set( get_default( ) ).
+    global->set( get_default( ) ).
 
     " Save defaults to global settings
     db_persist->save(
       key   = get_setting_key( zif_settings=>c_global )
-      value = li_global->get_json( ) ).
+      value = global->get_json( ) ).
 
   ENDMETHOD.
 
 
   METHOD injector.
 
-    DATA ls_instance TYPE ty_instance.
-
-    FIELD-SYMBOLS <ls_instance> TYPE ty_instance.
-
-    READ TABLE instances ASSIGNING <ls_instance> WITH TABLE KEY name = name.
+    READ TABLE instances ASSIGNING FIELD-SYMBOL(<instance>) WITH TABLE KEY name = name.
     IF sy-subrc = 0.
-      <ls_instance>-instance = mock.
+      <instance>-instance = mock.
     ELSE.
-      ls_instance-name     = name.
-      ls_instance-instance = mock.
-      INSERT ls_instance INTO TABLE instances.
+      DATA(instance) = VALUE ty_instance(
+        name     = name
+        instance = mock ).
+      INSERT instance INTO TABLE instances.
     ENDIF.
 
   ENDMETHOD.
@@ -199,43 +193,34 @@ CLASS zcl_settings IMPLEMENTATION.
 
   METHOD merge_settings.
 
-    DATA:
-      ls_global  TYPE zif_settings=>ty_settings,
-      ls_default TYPE zif_settings=>ty_settings.
-
-    FIELD-SYMBOLS:
-      <lv_value>   TYPE any,
-      <lv_global>  TYPE any,
-      <lv_default> TYPE any.
-
     TRY.
-        ls_global  = factory( zif_settings=>c_global )->get( ).
+        DATA(global) = factory( zif_settings=>c_global )->get( ).
       CATCH zcx_error ##NO_HANDLER.
         " Just use defaults
     ENDTRY.
 
-    ls_default = get_default( ).
+    DATA(default) = get_default( ).
 
     DO.
       " Current settings
-      ASSIGN COMPONENT sy-index OF STRUCTURE cs_settings TO <lv_value>.
+      ASSIGN COMPONENT sy-index OF STRUCTURE cs_settings TO FIELD-SYMBOL(<value>).
       IF sy-subrc <> 0.
         EXIT.
       ENDIF.
 
-      IF <lv_value> IS INITIAL.
+      IF <value> IS INITIAL.
         " Global settings
-        ASSIGN COMPONENT sy-index OF STRUCTURE ls_global TO <lv_global>.
+        ASSIGN COMPONENT sy-index OF STRUCTURE global TO FIELD-SYMBOL(<global>).
         ASSERT sy-subrc = 0.
 
-        IF <lv_value> IS INITIAL.
+        IF <value> IS INITIAL.
           " apm default settings
-          ASSIGN COMPONENT sy-index OF STRUCTURE ls_default TO <lv_default>.
+          ASSIGN COMPONENT sy-index OF STRUCTURE default TO FIELD-SYMBOL(<default>).
           ASSERT sy-subrc = 0.
 
-          <lv_value> = <lv_default>.
+          <value> = <default>.
         ELSE.
-          <lv_value> = <lv_global>.
+          <value> = <global>.
         ENDIF.
       ENDIF.
     ENDDO.
@@ -255,21 +240,20 @@ CLASS zcl_settings IMPLEMENTATION.
 
 
   METHOD zif_settings~get.
+
     result = settings.
+
     IF name <> zif_settings=>c_global.
       merge_settings( CHANGING cs_settings = result ).
     ENDIF.
+
   ENDMETHOD.
 
 
   METHOD zif_settings~get_json.
 
-    DATA:
-      ajson    TYPE REF TO zif_ajson,
-      lx_error TYPE REF TO zcx_ajson_error.
-
     TRY.
-        ajson = zcl_ajson=>new( )->keep_item_order( )->map(
+        DATA(ajson) = zcl_ajson=>new( )->keep_item_order( )->map(
           zcl_ajson_mapping=>create_to_camel_case( ) )->set(
             iv_path = '/'
             iv_val  = zif_settings~get( ) ).
@@ -279,21 +263,25 @@ CLASS zcl_settings IMPLEMENTATION.
         ENDIF.
 
         result = ajson->stringify( 2 ).
-      CATCH zcx_ajson_error INTO lx_error.
-        zcx_error=>raise_with_text( lx_error ).
+      CATCH zcx_ajson_error INTO DATA(error).
+        zcx_error=>raise_with_text( error ).
     ENDTRY.
 
   ENDMETHOD.
 
 
   METHOD zif_settings~is_valid.
-    result = boolc( check_settings( settings ) IS INITIAL ).
+
+    result = xsdbool( check_settings( settings ) IS INITIAL ).
+
   ENDMETHOD.
 
 
   METHOD zif_settings~load.
+
     zif_settings~set_json( db_persist->load( key )-value ).
     result = me.
+
   ENDMETHOD.
 
 
@@ -317,7 +305,7 @@ CLASS zcl_settings IMPLEMENTATION.
       zcx_error=>raise( 'Invalid settings' ).
     ENDIF.
 
-    MOVE-CORRESPONDING settings TO me->settings.
+    me->settings = CORRESPONDING #( settings ).
     result = me.
 
   ENDMETHOD.
@@ -342,7 +330,7 @@ CLASS zcl_settings IMPLEMENTATION.
           zcx_error=>raise( 'Invalid settings' ).
         ENDIF.
 
-        MOVE-CORRESPONDING settings TO me->settings.
+        me->settings = CORRESPONDING #( settings ).
       CATCH zcx_ajson_error INTO DATA(error).
         zcx_error=>raise_with_text( error ).
     ENDTRY.
