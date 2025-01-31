@@ -1,21 +1,21 @@
 {
-  "name": "abappm-settings",
+  "name": "@apm/settings",
   "version": "1.0.0",
-  "description": "ABAPPM-SETTINGS",
-  "type": "module",
+  "description": "Settings Manager for apm",
   "keywords": [
     "abap",
     "apm",
-    "module"
+    "module",
+    "settings"
   ],
   "homepage": "https://abappm.com",
   "bugs": {
-    "url": "https://github.com/abapPM/abapPM-Settings"
+    "url": "https://github.com/abapPM/abapPM-Settings/issues"
   },
   "license": "MIT",
   "author": {
     "name": "Marc Bernard",
-    "url": "https://abappm.com"
+    "url": "https://github.com/mbtools"
   },
   "maintainers": [
     {
@@ -24,13 +24,15 @@
     }
   ],
   "repository": {
+    "type": "https",
     "url": "https://github.com/abapPM/abapPM-Settings"
   },
   "funding": {
     "type": "github",
-    "url": "https://github.com/sponsors/abapPM"
+    "url": "https://github.com/sponsors/abappm"
   },
   "dependencies": {
+    "@apm/persist": "^1.0.0",
     "error": "^1.0.0"
   },
   "engines": {
