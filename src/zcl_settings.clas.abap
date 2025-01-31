@@ -86,9 +86,13 @@ CLASS zcl_settings IMPLEMENTATION.
 
   METHOD check_settings.
 
-    IF zcl_package_json_valid=>is_valid_url( is_settings-registry ) = abap_false.
-      INSERT |Invalid registry URL: { is_settings-registry }| INTO TABLE result.
-    ENDIF.
+    TRY.
+        IF is_settings-registry IS NOT INITIAL.
+          zcl_url=>parse( is_settings-registry ).
+        ENDIF.
+      CATCH zcx_error.
+        INSERT |Invalid registry URL: { is_settings-registry }| INTO TABLE result.
+    ENDTRY.
 
   ENDMETHOD.
 
@@ -140,14 +144,21 @@ CLASS zcl_settings IMPLEMENTATION.
   METHOD get_default.
 
     " Default values for settings
-    result-registry = zif_settings=>c_registry.
+    " TODO: Change to production registry
+    result-registry = zif_settings=>c_playground.
+
+    result-list_settings-order_by = 'PACKAGE'.
 
   ENDMETHOD.
 
 
   METHOD get_setting_key.
 
-    result = |{ zif_persist_apm=>c_key_type-settings }:{ name }|.
+    IF name = zif_settings=>c_global.
+      result = |{ zif_persist_apm=>c_key_type-settings }:{ zif_settings=>c_global }:ALL|.
+    ELSE.
+      result = |{ zif_persist_apm=>c_key_type-settings }:{ zif_settings=>c_user }:{ name }|.
+    ENDIF.
 
   ENDMETHOD.
 
