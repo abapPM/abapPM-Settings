@@ -34,7 +34,8 @@
   "dependencies": {
     "@apm/persist": "^1.0.0",
     "ajson": "^1.1.10",
-    "error": "^1.0.0"
+    "error": "^1.0.0",
+    "url": "^1.0.0"
   },
   "engines": {
     "abap": ">=7.50",
