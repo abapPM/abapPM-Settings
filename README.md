@@ -1,45 +1,51 @@
-![Version](https://img.shields.io/endpoint?url=https://shield.abap.space/version-shield-json/github/abapPM/ABAP-XXX/src/zcl_XXX.clas.abap/c_version&label=Version&color=blue)
+<picture>
+  <img width="100" height="40" alt="apm logo banner" src="https://github.com/abapPM/abapPM/blob/main/img/apm_banner.png?raw=true&ver=1.0.0">
+</picture>
 
-[![License](https://img.shields.io/github/license/abapPM/ABAP-XXX?label=License&color=success)](https://github.com/abapPM/ABAP-XXX/blob/main/LICENSE)
+![Version](https://img.shields.io/endpoint?url=https://shield.abappm.com/github/abapPM/abapPM-Settings/src/zif_Settings.intf.abap/c_version&label=Version&color=blue)
+
+[![License](https://img.shields.io/github/license/abapPM/abapPM-Settings?label=License&color=success)](https://github.com/abapPM/abapPM-Settings/blob/main/LICENSE)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg?color=success)](https://github.com/abapPM/.github/blob/main/CODE_OF_CONDUCT.md)
-[![REUSE Status](https://api.reuse.software/badge/github.com/abapPM/ABAP-XXX)](https://api.reuse.software/info/github.com/abapPM/ABAP-XXX)
+[![REUSE Status](https://api.reuse.software/badge/github.com/abapPM/abapPM-Settings)](https://api.reuse.software/info/github.com/abapPM/abapPM-Settings)
 
-# XXX
+# Settings Manager for apm
 
+Module used by apm to manage global and user settings. Persists data in `ZABAPPM` table.
 
+apm is a *package manager* 📦 for ABAP applications and modules, a *website* 🌐, and a *registry* 📑.
 
-NO WARRANTIES, [MIT License](https://github.com/abapPM/ABAP-XXX/blob/main/LICENSE)
+You can find the *website* at https://abappm.com and the *registry* at https://registry.abappm.com.
+
+NO WARRANTIES, [MIT License](https://github.com/abapPM/abapPM-Settings/blob/main/LICENSE)
 
 ## Usage
 
-...
+Not documented yet
 
 ## Prerequisites
 
-SAP Basis 7.40 or higher
+SAP Basis 7.50 or higher
 
 ## Installation
 
-Import ABAP XXX to your project using [apm](https://abappm.com).
+Install `@apm/settings` as a global module in your system using [apm](https://abappm.com).
 
-```abap
-IMPORT '*' TO 'z$1_your_project$2' FROM 'xxx'.
-" or
-IMPORT '*' TO '/namespace/$1$2' FROM 'xxx'.
-```
+or
+
+Specify the `@apm/settings` module as a dependency in your project and import it to your namespace using [apm](https://abappm.com).
 
 ## Contributions
 
-All contributions are welcome! Read our [Contribution Guidelines](https://github.com/abapPM/ABAP-XXX/blob/main/CONTRIBUTING.md), fork this repo, and create a pull request.
+All contributions are welcome! Read our [Contribution Guidelines](https://github.com/abapPM/abapPM-Settings/blob/main/CONTRIBUTING.md), fork this repo, and create a pull request.
 
-You can install the developer version of ABAP XXX using [abapGit](https://github.com/abapGit/abapGit) either by creating a new online repository for https://github.com/abapPM/ABAP-XXX.
+You can install the developer version of `@apm/settings` using [abapGit](https://github.com/abapGit/abapGit) by creating a new online repository for `https://github.com/abapPM/abapPM-Settings`.
 
-Recommended SAP package: `$XXX`
+Recommended SAP package: `$APM-SETTINGS`
 
 ## About
 
-Made with ❤️ in Canada
+Made with ❤ in Canada
 
-Copyright 2024 apm.to Inc. <https://apm.to>
+Copyright 2025 apm.to Inc. <https://apm.to>
 
-Follow [@marcfbe](https://twitter.com/marcfbe) on X/Twitter or [marcfbe](https://linkedin.com/in/marcfbe) or LinkedIn
+Follow [@marcf.be](https://bsky.app/profile/marcf.be) on Blueksy and [@marcfbe](https://linkedin.com/in/marcfbe) or LinkedIn
