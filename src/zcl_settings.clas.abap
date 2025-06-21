@@ -107,7 +107,7 @@ CLASS zcl_settings IMPLEMENTATION.
   METHOD constructor.
 
     IF name IS INITIAL OR strlen( name ) > 12.
-      zcx_error=>raise( |Invalid name: { name }| ).
+      RAISE EXCEPTION TYPE zcx_error_text EXPORTING text = |Invalid name: { name }|.
     ENDIF.
 
     me->name = name.
@@ -242,7 +242,7 @@ CLASS zcl_settings IMPLEMENTATION.
   METHOD zif_settings~delete.
 
     IF name = zif_settings=>c_global.
-      zcx_error=>raise( 'Global settings can not be deleted' ).
+      RAISE EXCEPTION TYPE zcx_error_text EXPORTING text = 'Global settings can not be deleted'.
     ENDIF.
 
     db_persist->delete( key ).
@@ -277,7 +277,7 @@ CLASS zcl_settings IMPLEMENTATION.
 
         result = ajson->stringify( 2 ).
       CATCH zcx_ajson_error INTO DATA(error).
-        zcx_error=>raise_with_text( error ).
+        RAISE EXCEPTION TYPE zcx_error_prev EXPORTING previous = error.
     ENDTRY.
 
   ENDMETHOD.
@@ -301,7 +301,7 @@ CLASS zcl_settings IMPLEMENTATION.
   METHOD zif_settings~save.
 
     IF zif_settings~is_valid( ) = abap_false.
-      zcx_error=>raise( 'Invalid settings' ).
+      RAISE EXCEPTION TYPE zcx_error_text EXPORTING text = 'Invalid settings'.
     ENDIF.
 
     " Save complete JSON including empty values for easy editing
@@ -315,7 +315,7 @@ CLASS zcl_settings IMPLEMENTATION.
   METHOD zif_settings~set.
 
     IF check_settings( settings ) IS NOT INITIAL.
-      zcx_error=>raise( 'Invalid settings' ).
+      RAISE EXCEPTION TYPE zcx_error_text EXPORTING text = 'Invalid settings'.
     ENDIF.
 
     me->settings = CORRESPONDING #( settings ).
@@ -340,12 +340,12 @@ CLASS zcl_settings IMPLEMENTATION.
             ev_container     = settings ).
 
         IF check_settings( settings ) IS NOT INITIAL.
-          zcx_error=>raise( 'Invalid settings' ).
+          RAISE EXCEPTION TYPE zcx_error_text EXPORTING text = 'Invalid settings'.
         ENDIF.
 
         me->settings = CORRESPONDING #( settings ).
       CATCH zcx_ajson_error INTO DATA(error).
-        zcx_error=>raise_with_text( error ).
+        RAISE EXCEPTION TYPE zcx_error_prev EXPORTING previous = error.
     ENDTRY.
 
     result = me.
