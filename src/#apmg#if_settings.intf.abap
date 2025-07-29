@@ -1,4 +1,4 @@
-INTERFACE zif_settings PUBLIC.
+INTERFACE /apmg/if_settings PUBLIC.
 
 ************************************************************************
 * apm Settings
@@ -52,8 +52,8 @@ INTERFACE zif_settings PUBLIC.
   CONSTANTS:
     c_registry   TYPE string VALUE 'https://registry.abappm.com',
     c_playground TYPE string VALUE 'https://playground.abappm.com',
-    c_global     TYPE ty_name VALUE zif_persist_apm=>c_key_name-global_settings,
-    c_user       TYPE ty_name VALUE zif_persist_apm=>c_key_name-user_settings.
+    c_global     TYPE ty_name VALUE /apmg/if_persist_apm=>c_key_name-global_settings,
+    c_user       TYPE ty_name VALUE /apmg/if_persist_apm=>c_key_name-user_settings.
 
   METHODS get
     RETURNING
@@ -65,37 +65,37 @@ INTERFACE zif_settings PUBLIC.
     RETURNING
       VALUE(result) TYPE string
     RAISING
-      zcx_error.
+      /apmg/cx_error.
 
   METHODS set
     IMPORTING
       !settings     TYPE ty_settings
     RETURNING
-      VALUE(result) TYPE REF TO zif_settings
+      VALUE(result) TYPE REF TO /apmg/if_settings
     RAISING
-      zcx_error.
+      /apmg/cx_error.
 
   METHODS set_json
     IMPORTING
       !json         TYPE string
     RETURNING
-      VALUE(result) TYPE REF TO zif_settings
+      VALUE(result) TYPE REF TO /apmg/if_settings
     RAISING
-      zcx_error.
+      /apmg/cx_error.
 
   METHODS load
     RETURNING
-      VALUE(result) TYPE REF TO zif_settings
+      VALUE(result) TYPE REF TO /apmg/if_settings
     RAISING
-      zcx_error.
+      /apmg/cx_error.
 
   METHODS save
     RAISING
-      zcx_error.
+      /apmg/cx_error.
 
   METHODS delete
     RAISING
-      zcx_error.
+      /apmg/cx_error.
 
   METHODS is_valid
     RETURNING

@@ -3,7 +3,7 @@
  <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
   <asx:values>
    <VSEOCLASS>
-    <CLSNAME>ZCL_SETTINGS</CLSNAME>
+    <CLSNAME>/APMG/CL_SETTINGS</CLSNAME>
     <LANGU>E</LANGU>
     <DESCRIPT>Settings</DESCRIPT>
     <STATE>1</STATE>
