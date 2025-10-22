@@ -146,7 +146,7 @@ CLASS /apmg/cl_settings IMPLEMENTATION.
   METHOD /apmg/if_settings~save.
 
     IF /apmg/if_settings~is_valid( ) = abap_false.
-      RAISE EXCEPTION TYPE /apmg/cx_error_text EXPORTING text = 'Invalid settings'.
+      RAISE EXCEPTION TYPE /apmg/cx_error_text EXPORTING text = |Invalid settings: { key }|.
     ENDIF.
 
     " Save complete JSON including empty values for easy editing
@@ -160,7 +160,7 @@ CLASS /apmg/cl_settings IMPLEMENTATION.
   METHOD /apmg/if_settings~set.
 
     IF check_settings( settings ) IS NOT INITIAL.
-      RAISE EXCEPTION TYPE /apmg/cx_error_text EXPORTING text = 'Invalid settings'.
+      RAISE EXCEPTION TYPE /apmg/cx_error_text EXPORTING text = |Invalid settings: { key }|.
     ENDIF.
 
     me->settings = CORRESPONDING #( settings ).
@@ -181,7 +181,7 @@ CLASS /apmg/cl_settings IMPLEMENTATION.
         ajson->to_abap( IMPORTING ev_container = settings ).
 
         IF check_settings( settings ) IS NOT INITIAL.
-          RAISE EXCEPTION TYPE /apmg/cx_error_text EXPORTING text = 'Invalid settings'.
+          RAISE EXCEPTION TYPE /apmg/cx_error_text EXPORTING text = |Invalid settings: { key }|.
         ENDIF.
 
         me->settings = CORRESPONDING #( settings ).
