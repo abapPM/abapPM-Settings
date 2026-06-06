@@ -1,7 +1,8 @@
 {
   "name": "@apm/settings",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Settings Manager for apm",
+  "type": "module",
   "keywords": [
     "abap",
     "apm",
