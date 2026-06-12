@@ -284,7 +284,7 @@ CLASS /apmg/cl_settings IMPLEMENTATION.
     result-tree_settings-order_by = 'NAME'.
 
     result-registry_settings = VALUE #(
-      ( name = 'production' url = /apmg/if_settings=>c_registry )
+      ( name = 'global'     url = /apmg/if_settings=>c_registry )
       ( name = 'playground' url = /apmg/if_settings=>c_playground ) ).
 
   ENDMETHOD.
