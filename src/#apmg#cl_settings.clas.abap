@@ -278,14 +278,16 @@ CLASS /apmg/cl_settings IMPLEMENTATION.
 
     " Default values for settings
     " TODO: Change to production registry
-    result-registry = /apmg/if_settings=>c_playground.
+    result-registry = /apmg/if_settings=>c_playground_url.
 
     result-list_settings-order_by = 'PACKAGE'.
     result-tree_settings-order_by = 'NAME'.
 
     result-registry_settings = VALUE #(
-      ( name = 'global'     url = /apmg/if_settings=>c_registry )
-      ( name = 'playground' url = /apmg/if_settings=>c_playground ) ).
+      ( name = /apmg/if_settings=>c_registry_name
+        url  = /apmg/if_settings=>c_registry_url )
+      ( name = /apmg/if_settings=>c_playground_name
+        url  = /apmg/if_settings=>c_playground_url ) ).
 
   ENDMETHOD.
 
