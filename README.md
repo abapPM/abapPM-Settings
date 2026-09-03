@@ -14,7 +14,7 @@
 
 Module used by apm to manage global and user settings. Persists data in `ZABAPPM` table.
 
-apm is a *package manager* 📦 for ABAP applications and modules, a *website* 🌐, and a *registry* 📑.
+apm is a *package manager* and a *registry* for ABAP applications and modules.
 
 You can find the *website* at https://abappm.com and the *registry* at https://registry.abappm.com.
 
